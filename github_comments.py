@@ -51,7 +51,7 @@ def get_options():
                       dest="what",
                       action="append",
                       choices=["comment", "status", "email"],
-                      default=["comment"],
+                      default=[],
                       help="how to store result")
     parser.add_option("-R", "--resulttype",
                       dest="type",
@@ -100,7 +100,6 @@ class GhComment(object):
         return r.json()
 
     def post(self):
-        print json.dumps(self.data)
         r = requests.post(self.report_url(), headers=self.auth_header, data=json.dumps(self.data))
         if r.status_code == 201:
             return True
