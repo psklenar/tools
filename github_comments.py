@@ -65,7 +65,7 @@ def get_options():
     (options, args) = parser.parse_args()
 
     if not options.token:
-        print("Token not given")
+        parser.error("Token not given")
 
     if not options.pullRequest:
         parser.error("Pull request not given")
