@@ -14,6 +14,8 @@ from email.mime.text import MIMEText
 
 from optparse import OptionParser
 
+state_translation = ["success", "failure", "error", "pending"]
+
 def get_options():
     parser = OptionParser(usage="usage: %prog [options]",
                           version="%prog 1.0")
@@ -122,7 +124,6 @@ class GhStatus(GhComment):
         self.post_url_type = "statuses_url"
 
     def set_content(self, status, comment, url, type):
-        state_translation = ["success", "failure", "error", "pending"]
         data = {
             "state": state_translation[status],
             "target_url": url,
