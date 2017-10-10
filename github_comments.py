@@ -136,7 +136,7 @@ class Email(GhComment):
         super(Email,self).__init__(*args, **kwargs)
 
     def set_content(self, status, comment, url, type):
-        self.email_to = os.environ.get("EMAIL_TO")
+        self.email_to = os.environ.get("EMAIL")
         self.email_from = os.environ.get("EMAIL_FROM") or "root@localhost"
         self.email_server = os.environ.get("EMAIL_SERVER") or "localhost"
         self.subject = "Automation: {type} for {repo} - {pr}".format(type=type, repo=self.repo, pr=self.pr)
@@ -161,6 +161,7 @@ Comment:    {comment}
         msg['From'] = self.email_from
         msg['To'] = self.email_to
 
+        print self.email_server, self.email_from, [self.email_to], msg.as_string()
         server = smtplib.SMTP(self.email_server)
         server.sendmail(self.email_from, [self.email_to], msg.as_string())
         server.quit()
