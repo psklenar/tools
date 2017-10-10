@@ -49,8 +49,9 @@ def get_options():
                       help="which state to store")
     parser.add_option("-w", "--what",
                       dest="what",
+                      action="append",
                       choices=["comment", "status", "email"],
-                      default="comment",
+                      default=["comment"],
                       help="how to store result")
     parser.add_option("-R", "--resulttype",
                       dest="type",
@@ -161,8 +162,6 @@ Comment:    {comment}
         msg['Subject'] = self.subject
         msg['From'] = self.email_from
         msg['To'] = self.email_to
-
-        print self.email_server, self.email_from, [self.email_to], msg.as_string()
         server = smtplib.SMTP(self.email_server)
         server.sendmail(self.email_from, [self.email_to], msg.as_string())
         server.quit()
@@ -171,22 +170,25 @@ Comment:    {comment}
 def main():
     options=get_options()
     resobj = None
-    if options.what == "comment":
-        resobj = GhComment(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
-                           repo=options.githubRepoName)
-    elif options.what == "status":
-        resobj = GhStatus(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
-                           repo=options.githubRepoName)
-    elif options.what == "email":
-        resobj = Email(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
-                           repo=options.githubRepoName)
-    if options.action == "list":
-        print "Items in PR"
-        print resobj.get()
-    else:
-        print "Save results to Comment"
-        resobj.set_content(status=int(options.status), comment=options.comment, url=options.url, type=options.type)
-        resobj.post()
+    for what in options.what:
+        if what == "comment":
+            print "Store to GitHub Comment"
+            resobj = GhComment(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
+                               repo=options.githubRepoName)
+        elif what == "status":
+            print "Store to GitHub PR Status"
+            resobj = GhStatus(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
+                               repo=options.githubRepoName)
+        elif what == "email":
+            print "Send email"
+            resobj = Email(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
+                               repo=options.githubRepoName)
+        if options.action == "list":
+            print "Items in PR"
+            print resobj.get()
+        else:
+            resobj.set_content(status=int(options.status), comment=options.comment, url=options.url, type=options.type)
+            resobj.post()
 
 
 if __name__ == '__main__':
