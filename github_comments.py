@@ -2,7 +2,22 @@
 # Author Petr Sklenar psklenar@gmail.com
 # script adds comment to github pull request
 # EXAMPLE:
-#       python github_comments.py --pullrequest 12 -o container-images -r memcached -t your_token -c "your comment"
+#
+# 1, store comment:
+#./github_comments.py -t YOURGITHUBTOKEN -o psklenar -r tools -p 2 -a store -s 0 -c "abc" -R "Moje CI" -u https://example.org
+#
+# 2, store as pull request status:
+# for status you have to use proper status codes `0` is success, `1` is failure, `2` is error, `3` is pending
+#
+#./github_comments.py -t YOURGITHUBTOKEN -o psklenar -r tools -p 2 -a store -s 0 -c "abc" -R "Moje CI" -u https://example.org -w status
+#
+#
+# SEND EMAIL:
+#EMAIL_FROM=user@example.com
+#EMAIL_SERVER=mail.example.com
+#EMAIL=user@example.com
+#./github_comments.py -t YOURGITHUBTOKEN -o psklenar -r tools -p 2 -a store -s 0 -c "abc" -R "Moje CI" -u https://example.org  -w email
+
 
 
 
@@ -142,7 +157,7 @@ class Email(GhComment):
         self.email_server = os.environ.get("EMAIL_SERVER") or "localhost"
         self.subject = "Automation: {type} for {repo} - {pr}".format(type=type, repo=self.repo, pr=self.pr)
         data = """
-Hallo,
+Hello,
 I'm your CI
 Here are results:
 ----------------
