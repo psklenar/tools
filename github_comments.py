@@ -123,10 +123,10 @@ class GhComment(object):
 
     def set_content(self,status ,comment, url , type):
         body = """## {context} comment
-* Status: __{status}__
+* Status: {textstatus}, return code = __{status}__ 
 * Result url: __[{url}]({url})__
 * Comment: __{comment}__
-""".format(status=status, context=type, url=url, comment=comment)
+""".format(textstatus=state_translation[status], status=status, context=type, url=url, comment=comment)
 
         data = {
             'body': '{body}'.format(body=body)
@@ -162,13 +162,13 @@ I'm your CI
 Here are results:
 ----------------
 
-Status:     {status}
+Status:     {textstatus}, return code = {status}
 Result url: {url}
 Comment:    {comment}
 
       Regards
       Your {type}
-""".format(status=status, type=type, url=url, comment=comment)
+""".format(textstatus=state_translation[status], status=status, type=type, url=url, comment=comment)
         self.data = data
 
     def post(self):
