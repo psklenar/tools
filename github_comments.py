@@ -29,7 +29,7 @@ from email.mime.text import MIMEText
 
 from optparse import OptionParser
 
-state_translation = ["success", "failure", "error", "pending"]
+state_translation = ["success", "failure", "error", "pending"] + ['failure' for x in range (255)]
 
 def get_options():
     parser = OptionParser(usage="usage: %prog [options]",
