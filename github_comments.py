@@ -111,10 +111,8 @@ class GhComment(object):
         return self.get()[self.post_url_type]
 
     def get(self):
-        print self.get_url
-        print self.auth_header
-        print dir(requests.get)
-        r = requests.get(self.get_url, self.auth_header)
+        ## requests.get()
+        r = requests.get(self.get_url)
 
         return r.json()
 
