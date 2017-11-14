@@ -18,14 +18,12 @@
 #EMAIL=user@example.com
 #./github_comments.py -t YOURGITHUBTOKEN -o psklenar -r tools -p 2 -a store -s 0 -c "abc" -R "Moje CI" -u https://example.org  -w email
 
-
-
-
 import requests
 import json
 import os
 import smtplib
 from email.mime.text import MIMEText
+import socket
 
 from optparse import OptionParser
 
@@ -97,7 +95,7 @@ def get_options():
 
 class GhComment(object):
     def __init__(self, token, orgname, pr, repo):
-        self.orgname = orgname,
+        self.orgname = orgname
         self.pr = pr
         self.repo = repo
         self.get_url = "https://api.github.com/repos/{0}/{1}/pulls/{2}".format(orgname, repo, pr)
@@ -160,17 +158,16 @@ class Email(GhComment):
         self.subject = "Automation: {type} for {repo} - {pr}".format(type=type, repo=self.repo, pr=self.pr)
         data = """
 Hello,
-I'm your CI
-Here are results:
+I'm your CI.
 ----------------
 
 Status:     {textstatus}, return code = {status}
 Result url: {url}
 Comment:    {comment}
+See: https://github.com/{orgname}/{repo}/pull/{pr}
 
-      Regards
-      Your {type}
-""".format(textstatus=state_translation[status], status=status, type=type, url=url, comment=comment)
+      Enjoy!
+""".format(textstatus=state_translation[status], status=status, type=type, url=url, comment=comment, orgname=self.orgname, repo=self.repo, pr=self.pr)
         self.data = data
 
     def post(self):
@@ -178,9 +175,13 @@ Comment:    {comment}
         msg['Subject'] = self.subject
         msg['From'] = self.email_from
         msg['To'] = self.email_to
-        server = smtplib.SMTP(self.email_server)
-        server.sendmail(self.email_from, [self.email_to], msg.as_string())
-        server.quit()
+        try:
+            server = smtplib.SMTP(self.email_server)
+            server.sendmail(self.email_from, [self.email_to], msg.as_string())
+            server.quit()
+        except socket.error as e:
+            print("{0}\n            Did you specify mails variables? like EMAIL_FROM=user@example.com EMAIL_SERVER=mail.example.com EMAIL=user@example.com".format(e))
+            exit(1)
 
 
 def main():
