@@ -111,6 +111,7 @@ class GhComment(object):
     def get(self):
         ## requests.get()
         r = requests.get(self.get_url, headers=self.auth_header)
+        #print r.json()
 
         return r.json()
 
@@ -202,7 +203,7 @@ def main():
                                repo=options.githubRepoName)
         if options.action == "list":
             print "Items in PR"
-            print resobj.get()
+            #print resobj.get()
         else:
             resobj.set_content(status=int(options.status), comment=options.comment, url=options.url, type=options.type)
             resobj.post()
