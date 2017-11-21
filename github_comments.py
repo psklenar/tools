@@ -23,6 +23,8 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 import socket
+import traceback
+import sys
 
 
 
@@ -121,7 +123,11 @@ class GhComment(object):
         if r.status_code == 201:
             return True
         else:
-            raise Exception('http return code is bad', r.status_code)
+            try:
+                raise Exception('http return code is bad', r.status_code)
+            except:
+                traceback.print_exc()
+                sys.exit(3)
 
     def set_content(self,status ,comment, url , type):
         body = """## {context} comment
@@ -195,16 +201,15 @@ def main():
             resobj = GhComment(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
                                repo=options.githubRepoName)
         elif what == "status":
-            print "Store to GitHub PR Status"
             resobj = GhStatus(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
                                repo=options.githubRepoName)
+            print "Store to GitHub PR Status"
         elif what == "email":
-            print "Send email"
             resobj = Email(token=options.token, orgname=options.githubOrgName, pr=options.pullRequest,
                                repo=options.githubRepoName)
+            print "Send email"
         if options.action == "list":
             print "Items in PR"
-            #print resobj.get()
         else:
             resobj.set_content(status=int(options.status), comment=options.comment, url=options.url, type=options.type)
             resobj.post()
