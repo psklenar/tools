@@ -11,7 +11,6 @@
 #
 #./github_comments.py -t YOURGITHUBTOKEN -o psklenar -r tools -p 2 -a store -s 0 -c "abc" -R "Moje CI" -u https://example.org -w status
 #
-#
 # SEND EMAIL:
 #EMAIL_FROM=user@example.com
 #EMAIL_SERVER=mail.example.com
@@ -24,6 +23,8 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 import socket
+
+
 
 from optparse import OptionParser
 
