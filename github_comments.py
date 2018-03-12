@@ -96,6 +96,7 @@ def get_options():
 
 # "error", "failure", "pending", "success"
 
+
 class GhComment(object):
     def __init__(self, token, orgname, pr, repo):
         self.orgname = orgname
@@ -119,7 +120,15 @@ class GhComment(object):
         return r.json()
 
     def post(self):
+        #print self.report_url()
+        #print self.auth_header
+        #print json.dumps(self.data)
+
         r = requests.post(self.report_url(), headers=self.auth_header, data=json.dumps(self.data))
+        print r.request
+        print r.reason
+        print r.raw
+
         if r.status_code == 201:
             return True
         else:
@@ -129,7 +138,7 @@ class GhComment(object):
                 traceback.print_exc()
                 sys.exit(3)
 
-    def set_content(self,status ,comment, url , type):
+    def set_content(self, status, comment, url, type):
         body = """## {context} comment
 * Status: {textstatus}, return code = __{status}__ 
 * Result url: __[{url}]({url})__
@@ -140,6 +149,7 @@ class GhComment(object):
             'body': '{body}'.format(body=body)
         }
         self.data = data
+
 
 class GhStatus(GhComment):
     def __init__(self, *args, **kwargs):
@@ -154,6 +164,7 @@ class GhStatus(GhComment):
             "context": type
         }
         self.data = data
+
 
 class Email(GhComment):
     def __init__(self, *args, **kwargs):
