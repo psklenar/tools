@@ -125,9 +125,9 @@ class GhComment(object):
         #print json.dumps(self.data)
 
         r = requests.post(self.report_url(), headers=self.auth_header, data=json.dumps(self.data))
-        print r.request
-        print r.reason
-        print r.raw
+        #print r.request
+        #print r.reason
+        #print r.raw
 
         if r.status_code == 201:
             return True
